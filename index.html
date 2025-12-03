@@ -1,155 +1,164 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Camera Fiorita – Gallery</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Camera Fiorita – Gallery</title>
 
-<style>
-  body {
-    margin: 0;
-    background: #0e1918;
-    overflow-x: hidden;
-    font-family: Arial, sans-serif;
-  }
+  <style>
+    body {
+      margin: 0;
+      background: #0e1918;
+      overflow-x: hidden;
+      font-family: Arial, sans-serif;
+    }
 
-  .slider-container {
-    position: relative;
-    width: 100%;
-    max-width: 1400px;
-    margin: 0 auto;
-    overflow: hidden;
-  }
+    .slider-container {
+      position: relative;
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      overflow: hidden;
+      background: #050b0b;
+    }
 
-  .slider-track {
-    display: flex;
-    transition: transform 0.5s ease;
-  }
+    .slider-track {
+      display: flex;
+      transition: transform 0.5s ease;
+    }
 
-  .slide img {
-    width: 100vw;
-    height: 80vh;
-    object-fit: cover;
-  }
+    .slide {
+      min-width: 100vw;
+      max-width: 100vw;
+      height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #050b0b;
+    }
 
-  .nav-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(255,255,255,0.25);
-    border: none;
-    color: white;
-    font-size: 40px;
-    padding: 10px 18px;
-    cursor: pointer;
-    border-radius: 50px;
-    backdrop-filter: blur(6px);
-  }
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-  .nav-btn:hover {
-    background: rgba(255,255,255,0.45);
-  }
+    .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.25);
+      border: none;
+      color: #fff;
+      font-size: 40px;
+      padding: 10px 18px;
+      cursor: pointer;
+      border-radius: 50px;
+      backdrop-filter: blur(6px);
+    }
 
-  #prevBtn { left: 20px; }
-  #nextBtn { right: 20px; }
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.45);
+    }
 
-  .dots {
-    position: absolute;
-    bottom: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 8px;
-  }
+    #prevBtn {
+      left: 20px;
+    }
 
-  .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.4);
-    cursor: pointer;
-  }
+    #nextBtn {
+      right: 20px;
+    }
 
-  .dot.active {
-    background: white;
-  }
-</style>
+    .dots {
+      position: absolute;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+    }
 
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.4);
+      cursor: pointer;
+      border: none;
+    }
+
+    .dot.active {
+      background: #ffffff;
+    }
+  </style>
 </head>
 <body>
+  <div class="slider-container">
+    <div class="slider-track" id="sliderTrack"></div>
 
-<div class="slider-container">
-  <div class="slider-track" id="sliderTrack"></div>
+    <button id="prevBtn" class="nav-btn">‹</button>
+    <button id="nextBtn" class="nav-btn">›</button>
 
-  <button id="prevBtn" class="nav-btn">‹</button>
-  <button id="nextBtn" class="nav-btn">›</button>
+    <div class="dots" id="dotsContainer"></div>
+  </div>
 
-  <div class="dots" id="dotsContainer"></div>
-</div>
+  <script>
+    // QUI la sequenza delle immagini (in base ai file che hai caricato)
+    const images = [
+      "antica_cascina_del_medico_ 34 copia.jpg",
+      "antica_cascina_del_medico_42.jpg",
+      "antica_cascina_del_medico_43.jpg",
+      "antica_cascina_del_medico_44 copia.jpg",
+      "antica_cascina_del_medico_45.jpg",
+      "antica_cascina_del_medico_47.jpg"
+    ];
 
-<script>
-  const images = [
-    "https://drive.google.com/uc?export=view&id=1eKl5A_VumFDVeXTc_OveJ9z4BlsNYyT-",
-    "https://drive.google.com/uc?export=view&id=14mMoNN-uiaN93ib_uuOr-VN6VHx1gctp",
-    "https://drive.google.com/uc?export=view&id=1q8PNpBwOvnJtyU6WVKONEZWcYdCaFnmb",
-    "https://drive.google.com/uc?export=view&id=1UfT8BwvklQxlz7N3OxoF2PxnauKpOJBP",
-    "https://drive.google.com/uc?export=view&id=1Ih_eIruN1sKYhewHG0Ar3mZXBx8ySRNL",
-    "https://drive.google.com/uc?export=view&id=1GOgKXKAM3UrNwo-hitsyc7YdKUVEeCRq",
-    "https://drive.google.com/uc?export=view&id=1W6Y0VrdQKvpHedHp1F4WxWSpMIgtYAsx",
-    "https://drive.google.com/uc?export=view&id=13dQniqY5vCt11T45-E35QZjkTM_ey116",
-    "https://drive.google.com/uc?export=view&id=10mK_Uqji3Cmh_-ti0lUjh4KJbL5xiQJg",
-    "https://drive.google.com/uc?export=view&id=1G8IB6XEskoStQ1QSjM3X4NleG9NPTkOz",
-    "https://drive.google.com/uc?export=view&id=1UZ3XufcpMTKFHrro_U7Pkg_vbbpUJoEK"
-  ];
+    const track = document.getElementById("sliderTrack");
+    const dotsContainer = document.getElementById("dotsContainer");
+    let index = 0;
 
-  const track = document.getElementById("sliderTrack");
-  const dotsContainer = document.getElementById("dotsContainer");
+    // Genera le slide e i pallini
+    images.forEach((src, i) => {
+      const slide = document.createElement("div");
+      slide.className = "slide";
+      slide.innerHTML = `<img src="${src}" alt="Camera Fiorita ${i + 1}" />`;
+      track.appendChild(slide);
 
-  let index = 0;
+      const dot = document.createElement("button");
+      dot.className = "dot";
+      dot.addEventListener("click", () => goToSlide(i));
+      dotsContainer.appendChild(dot);
+    });
 
-  // Generate slides
-  images.forEach((src, i) => {
-    const div = document.createElement("div");
-    div.className = "slide";
-    div.innerHTML = `<img src="${src}" />`;
-    track.appendChild(div);
+    const dots = document.querySelectorAll(".dot");
+    if (dots.length) dots[0].classList.add("active");
 
-    const dot = document.createElement("div");
-    dot.className = "dot";
-    dot.onclick = () => goToSlide(i);
-    dotsContainer.appendChild(dot);
-  });
+    function updateSlider() {
+      track.style.transform = `translateX(-${index * 100}vw)`;
+      dots.forEach(d => d.classList.remove("active"));
+      dots[index].classList.add("active");
+    }
 
-  const dots = document.querySelectorAll(".dot");
-  dots[0].classList.add("active");
+    function next() {
+      index = (index + 1) % images.length;
+      updateSlider();
+    }
 
-  function updateSlider() {
-    track.style.transform = `translateX(-${index * 100}vw)`;
-    dots.forEach(d => d.classList.remove("active"));
-    dots[index].classList.add("active");
-  }
+    function prev() {
+      index = (index - 1 + images.length) % images.length;
+      updateSlider();
+    }
 
-  function next() {
-    index = (index + 1) % images.length;
-    updateSlider();
-  }
+    function goToSlide(i) {
+      index = i;
+      updateSlider();
+    }
 
-  function prev() {
-    index = (index - 1 + images.length) % images.length;
-    updateSlider();
-  }
+    document.getElementById("nextBtn").onclick = next;
+    document.getElementById("prevBtn").onclick = prev;
 
-  function goToSlide(i) {
-    index = i;
-    updateSlider();
-  }
-
-  document.getElementById("nextBtn").onclick = next;
-  document.getElementById("prevBtn").onclick = prev;
-
-  // Optional autoplay
-  setInterval(next, 5000);
-</script>
-
+    // Autoplay opzionale (ogni 5 secondi)
+    setInterval(next, 5000);
+  </script>
 </body>
 </html>
